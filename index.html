@@ -261,6 +261,19 @@
             color: var(--gold-primary); display: block; margin-bottom: 10px;
         }
 
+        .disclaimer{
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-gold);
+            background: rgba(212, 175, 55, 0.06);
+            color: var(--text-secondary);
+            text-align: left;
+            font-size: 0.92rem;
+            line-height: 1.5;
+        }
+        .disclaimer strong{ color: var(--gold-primary); }
+        [dir="rtl"] .disclaimer{ text-align: right; }
+
         .final-price-display {
             text-align: center; margin: 30px 0;
             padding: 30px; background: rgba(0, 0, 0, 0.3);
@@ -442,6 +455,7 @@
                 <div class="total-label"><span class="total-gold" data-en="Total" data-ar="الإجمالي">Total</span> <span class="total-red" data-en="(Before VAT)" data-ar="(بدون VAT)">(Before VAT)</span></div>
                 <div class="final-price-amount" id="finalPriceAmount">AED 0</div>
                 <div style="color: var(--gold-light); font-size: 0.95rem;" id="quoteSummary"></div>
+                <div id="inspectionDisclaimer" class="disclaimer hidden" style="margin-top:14px;"></div>
             </div>
 
             <div class="inspection-notice">
@@ -610,7 +624,8 @@ function buildIncluded(tabKey) {
     ];
 }
 
-function buildCareGuide(tabKey, ppfFinish) {
+function buildCareGuide(tabKey, ppfFinish, color) {
+    // Tint-only: simple care tips
     if (tabKey === 'tintOnly') {
         return {
             intro: { en:"Basic tint care (recommended):", ar:"تعليمات العناية بالتظليل (مُوصى بها):" },
@@ -622,6 +637,7 @@ function buildCareGuide(tabKey, ppfFinish) {
         };
     }
 
+    // Shared PPF bullets
     const commonBullets = [
         {en:"After installation: No washing for 48–72 hours.", ar:"بعد التركيب: لا تغسل السيارة لمدة 48–72 ساعة."},
         {en:"Wash using pH-neutral car shampoo + soft microfiber.", ar:"اغسل بشامبو متعادل pH + مايكروفايبر ناعم."},
@@ -638,13 +654,23 @@ function buildCareGuide(tabKey, ppfFinish) {
         {en:"Abnormal discoloration (when maintained correctly)", ar:"تغير لون غير طبيعي (عند العناية الصحيحة)"}
     ];
 
+    // Normalize color for warranty rules
+    const c = (color || '').toLowerCase();
+    const isWhiteEN = c.includes('white');
+    const isWhiteAR = (color || '').includes('أبيض') || (color || '').includes('ابيض');
+    const isWhite = isWhiteEN || isWhiteAR;
+
+    // MATTE: 5 years by default; up to 10 years with maintenance (incl. first-year requirement)
     if (ppfFinish === 'Matte') {
         return {
-            intro: { en:"Matte PPF — to keep the full 10-year warranty:", ar:"PPF مطفي — للحفاظ على ضمان 10 سنوات بالكامل:" },
+            intro: {
+                en:"Matte PPF — Warranty: 5 years standard, up to 10 years with maintenance",
+                ar:"PPF مطفي — الضمان: 5 سنوات بشكل أساسي، ويصل إلى 10 سنوات مع الصيانة"
+            },
             bullets: [
-                {en:"Recommended: 2 maintenance visits per year at our shop (deep cleaning + maintenance).", ar:"موصى به: زيارتان صيانة سنوياً في المركز (تنظيف عميق + صيانة)."},
+                {en:"To qualify for the full 10-year warranty: 2 maintenance visits per year at our shop (deep cleaning + maintenance).", ar:"للحصول على ضمان 10 سنوات بالكامل: زيارتان صيانة سنوياً في المركز (تنظيف عميق + صيانة)."},
                 {en:"Minimum: at least 1 deep cleaning per year.", ar:"الحد الأدنى: تنظيف عميق مرة واحدة سنوياً."},
-                {en:"First-year rule: If there is no maintenance visit during the first 12 months, warranty adjusts to 5 years.", ar:"قاعدة السنة الأولى: إذا لم تتم زيارة صيانة خلال أول 12 شهر، يتم تعديل الضمان إلى 5 سنوات."},
+                {en:"First-year rule: If there is no maintenance visit during the first 12 months, the warranty is adjusted to 5 years.", ar:"قاعدة السنة الأولى: إذا لم تتم زيارة صيانة خلال أول 12 شهر، يتم تعديل الضمان إلى 5 سنوات."},
                 {en:"Matte PPF: never polish or use wax that adds shine (it can damage the matte look).", ar:"PPF مطفي: لا تستخدم تلميع أو شمع يضيف لمعان (قد يضر بالمظهر المطفي)."},
                 ...commonBullets
             ],
@@ -653,9 +679,21 @@ function buildCareGuide(tabKey, ppfFinish) {
         };
     }
 
+    // GLOSS: 10 years standard; for non-white colors, annual maintenance is required to keep full 10 years
+    const extraGlossRule = isWhite
+        ? {
+            en:"Warranty: 10 years standard — for WHITE vehicles, at least 1 annual deep cleaning is required to maintain the full 10-year warranty.",
+            ar:"الضمان: 10 سنوات بشكل قياسي — للسيارات باللون الأبيض، يلزم تنظيف عميق مرة واحدة سنوياً على الأقل للحفاظ على ضمان 10 سنوات بالكامل."
+        }
+        : {
+            en:"Warranty: 10 years standard (no maintenance requirement for warranty). Annual deep cleaning is recommended to keep the film looking new.",
+            ar:"الضمان: 10 سنوات بشكل قياسي (بدون شرط صيانة للضمان). يُوصى بتنظيف عميق سنوياً للحفاظ على أفضل مظهر."
+        };
+
     return {
-        intro: { en:"Glossy PPF — to keep the shine like new:", ar:"PPF لمّاع — للحفاظ على اللمعة كالجديد:" },
+        intro: { en:"Glossy PPF — 10-Year Warranty", ar:"PPF لمّاع — ضمان 10 سنوات" },
         bullets: [
+            {en: extraGlossRule.en, ar: extraGlossRule.ar},
             {en:"Recommended: 1 deep cleaning + detailing service per year.", ar:"موصى به: تنظيف عميق + ديتيلينغ مرة سنوياً."},
             {en:"Helps remove traffic film, water spots, and contaminants that reduce shine over time.", ar:"يساعد على إزالة طبقات الطريق وبقع الماء والملوثات التي تقلل اللمعة مع الوقت."},
             ...commonBullets
@@ -680,8 +718,8 @@ function renderBullets(items) {
     return ul;
 }
 
-function renderCareGuide(tabKey, ppfFinish) {
-    const guide = buildCareGuide(tabKey, ppfFinish);
+function renderCareGuide(tabKey, ppfFinish, color) {
+    const guide = buildCareGuide(tabKey, ppfFinish, color);
     const wrap = document.createElement('div');
 
     const intro = document.createElement('div');
@@ -766,13 +804,27 @@ function calculatePackages(isRerender=false) {
         : '';
     summary.textContent = `${tabName} • ${typeText}${finishText}${tintText}${feeText} • ${carModel} • ${color} • ${(currentLang === 'ar') ? 'السعر بدون VAT' : 'Price before VAT'}`;
 
+    // Inspection disclaimer (PPF only)
+    const disclaimer = document.getElementById('inspectionDisclaimer');
+    const needsInspection = (tabKey === 'ppfPackage' || tabKey === 'ppfOnly');
+    if (needsInspection) {
+        disclaimer.classList.remove('hidden');
+        disclaimer.innerHTML = (currentLang === 'ar')
+            ? `<strong>ملاحظة مهمة:</strong> سيتم فحص السيارة قبل تركيب الـPPF للتأكد من عدم وجود ضرر في الطلاء أو هيكل السيارة. أي خدوش/تقشير/تلف في الطلاء أو ضرر في الجسم قد يحتاج إلى إصلاح أو معالجة قبل تركيب الـPPF، لأن ذلك قد يؤثر على التصاق المادة وعمرها الافتراضي وجودة النتيجة النهائية.`
+            : `<strong>Important Note:</strong> The vehicle will be inspected before applying PPF to check for any paint or body damage. Any scratches, peeling, paint defects, or body damage may need to be repaired/rectified prior to installation, as it can affect adhesion, longevity, and the final finish.`;
+    } else {
+        disclaimer.classList.add('hidden');
+        disclaimer.innerHTML = '';
+    }
+
+
     const includedList = document.getElementById('includedList');
     includedList.innerHTML = '';
     includedList.appendChild(renderBullets(included));
 
     const care = document.getElementById('careGuide');
     care.innerHTML = '';
-    care.appendChild(renderCareGuide(tabKey, ppfFinish));
+    care.appendChild(renderCareGuide(tabKey, ppfFinish, color));
 
     const results = document.getElementById('resultsSection');
     results.style.display = 'block';
