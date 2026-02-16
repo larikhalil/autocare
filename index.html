@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1885 Car Service Centre - Auto Care Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+:root {
+            --bg-deep: #0a0a0a;
+            --gold-primary: #D4AF37;
+            --gold-light: #F4E4BC;
+            --gold-dark: #8B6914;
+            --red-primary: #E31E24;
+            --red-dark: #B91C1C;
+            --green-primary: #25D366;
+            --green-dark: #128C7E;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-gold: rgba(212, 175, 55, 0.2);
+            --surface-glass: rgba(255, 255, 255, 0.03);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+            z-index: -1; pointer-events: none;
+        }
+
+        .bg-texture {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg '%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1; pointer-events: none;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 0; margin-bottom: 40px;
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(90deg, transparent, var(--gold-primary), transparent) 1;
+        }
+
+        .brand { display: flex; align-items: center; gap: 20px; }
+        .logo { width: 80px; height: 80px; object-fit: contain; }
+        .logo-fallback {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: #000; font-size: 1.2rem;
+            border: 3px solid var(--gold-primary);
+        }
+        .brand-name { font-size: 1.5rem; font-weight: 700; }
+
+        .language-toggle {
+            display: flex; gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px; border-radius: 30px;
+            border: 1px solid var(--border-gold);
+        }
+
+        .lang-btn {
+            padding: 8px 20px; border: none; background: transparent;
+            color: var(--text-secondary); cursor: pointer;
+            border-radius: 20px; transition: all 0.3s ease;
+            font-family: inherit; font-weight: 600;
+        }
+
+        .lang-btn.active {
+            background: var(--gold-primary);
+            color: #000;
+        }
+
+        h1, h2, h3 {
+            text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 50%, var(--gold-primary) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        .glass-card {
+            background: var(--surface-glass); backdrop-filter: blur(20px);
+            border: 1px solid var(--border-gold); border-radius: 20px;
+            padding: 30px; margin-bottom: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .form-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px; margin-bottom: 30px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+        label {
+            font-size: 0.85rem; color: var(--gold-light);
+            font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        input, select {
+            padding: 15px 20px; background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--border-gold); border-radius: 10px;
+            color: var(--text-primary); font-family: inherit; font-size: 1rem;
+            transition: all 0.3s ease; outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        input:disabled, select:disabled {
+            opacity: 0.5; cursor: not-allowed;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        select { 
+            appearance: none; 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg ' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 15px center;
+            padding-right: 50px;
+        }
+
+        .error-message {
+            color: #ff4444; font-size: 0.85rem; margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show { display: block; }
+
+        input.error, select.error {
+            border-color: #ff4444;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
+        }
+
+        .btn-primary {
+            width: 100%; padding: 18px;
+            background: linear-gradient(90deg, var(--red-primary) 0%, var(--red-dark) 100%);
+            color: white; border: none; border-radius: 10px;
+            font-size: 1.1rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; cursor: pointer; position: relative; overflow: hidden;
+            transition: transform 0.3s ease; font-family: inherit;
+        }
+
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
+        .btn-primary:disabled {
+            opacity: 0.5; cursor: not-allowed;
+        }
+
+        .btn-primary::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.6s;
+        }
+        .btn-primary:hover:not(:disabled)::after { left: 100%; }
+
+        .btn-whatsapp {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(90deg, var(--green-primary) 0%, var(--green-dark) 100%);
+            color: white; text-decoration: none; border-radius: 10px;
+            font-weight: 600; margin-top: 20px; transition: transform 0.3s ease;
+            border: none; cursor: pointer; font-size: 1rem;
+        }
+
+        .btn-whatsapp:hover:not(:disabled) { transform: translateY(-2px); }
+        .btn-whatsapp:disabled {
+            opacity: 0.5; cursor: not-allowed; background: #666;
+        }
+
+        .results-section { display: none; animation: fadeInUp 0.6s ease; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .package-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px; margin: 30px 0;
+        }
+
+        .package-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid var(--border-gold); border-radius: 15px;
+            padding: 25px; cursor: pointer; transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+            border-color: var(--gold-primary);
+        }
+
+        .package-card.selected {
+            border-color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.05);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .package-card.selected::after {
+            content: '✓'; position: absolute; top: 10px; right: 10px;
+            width: 30px; height: 30px; background: var(--gold-primary);
+            color: #000; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
+            font-weight: 700;
+        }
+
+        .package-term {
+            font-size: 1.3rem; font-weight: 700; color: var(--gold-primary);
+            margin-bottom: 10px;
+        }
+
+        .package-km {
+            color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;
+        }
+
+        .package-notes {
+            font-size: 0.8rem; color: var(--gold-light);
+            border-top: 1px solid var(--border-gold);
+            padding-top: 10px; margin-top: 10px;
+        }
+
+        .inspection-notice {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid var(--gold-primary);
+            padding: 20px; margin: 30px 0;
+            border-radius: 0 10px 10px 0;
+            color: var(--text-secondary);
+        }
+
+        .inspection-notice strong {
+            color: var(--gold-primary); display: block; margin-bottom: 10px;
+        }
+
+        .final-price-display {
+            text-align: center; margin: 30px 0;
+            padding: 30px; background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px; border: 1px solid var(--border-gold);
+        }
+
+        .total-gold { color: var(--gold-primary); }
+        .total-red { color: var(--red-primary); }
+
+        .total-label { color: var(--text-secondary); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+
+        .final-price-amount {
+            font-size: 3rem; font-weight: 700; color: var(--gold-primary);
+            margin: 10px 0;
+        }
+
+        .hidden { display: none !important; }
+
+        /* RTL Support */
+        [dir="rtl"] { font-family: 'Cairo', sans-serif; }
+
+        [dir="rtl"] header { flex-direction: row-reverse; }
+        [dir="rtl"] .brand { flex-direction: row-reverse; }
+
+        [dir="rtl"] select {
+            background-position: left 15px center;
+            padding-right: 20px;
+            padding-left: 50px;
+        }
+
+        [dir="rtl"] .package-card.selected::after {
+            right: auto;
+            left: 10px;
+        }
+
+        [dir="rtl"] .inspection-notice {
+            border-left: none;
+            border-right: 4px solid var(--gold-primary);
+            border-radius: 10px 0 0 10px;
+        }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 20px; text-align: center; }
+            [dir="rtl"] header { flex-direction: column; }
+            .form-grid { grid-template-columns: 1fr; }
+            .package-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.5rem; }
+        }
+</style>
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+    <div class="bg-texture"></div>
+
+    <div class="container">
+
+        <header>
+            <div class="brand">
+                <img src="LOGO.png" alt="1885" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="logo-fallback" style="display: none;">1885</div>
+                <div class="brand-name gold-gradient-text">1885 CAR SERVICE CENTRE</div>
+            </div>
+            <div class="language-toggle">
+                <button class="lang-btn active" onclick="setLanguage('en', this)">English</button>
+                <button class="lang-btn" onclick="setLanguage('ar', this)">العربية</button>
+            </div>
+        </header>
+
+        <h1 class="page-title gold-gradient-text" data-en="Auto Care Calculator" data-ar="حاسبة العناية بالسيارة">Auto Care Calculator</h1>
+
+        <div class="glass-card">
+            <h2 class="gold-gradient-text" style="margin-bottom: 15px;" data-en="Choose a Service" data-ar="اختر الخدمة">Choose a Service</h2>
+
+            <div class="package-grid" id="tabGrid">
+                <div class="package-card selected" data-tab="ppfPackage" onclick="selectTab('ppfPackage')">
+                    <div class="package-term" data-en="PPF Package" data-ar="باقة حماية شاملة (PPF)">PPF Package</div>
+                    <div class="package-km" data-en="PPF + Window Tint + Ceramic (Inside & Outside)" data-ar="PPF + تظليل + سيراميك (داخلي وخارجي)">PPF + Window Tint + Ceramic (Inside & Outside)</div>
+                    <div class="package-notes" data-en="Best value bundle for full protection." data-ar="أفضل قيمة لحماية شاملة.">Best value bundle for full protection.</div>
+                </div>
+
+                <div class="package-card" data-tab="ppfOnly" onclick="selectTab('ppfOnly')">
+                    <div class="package-term" data-en="PPF Only" data-ar="PPF فقط">PPF Only</div>
+                    <div class="package-km" data-en="Paint Protection Film for the vehicle" data-ar="حماية الطلاء للفيلم على المركبة">Paint Protection Film for the vehicle</div>
+                    <div class="package-notes" data-en="Ideal if you already have tint/ceramic." data-ar="مثالي إذا لديك تظليل/سيراميك مسبقاً.">Ideal if you already have tint/ceramic.</div>
+                </div>
+
+                <div class="package-card" data-tab="tintOnly" onclick="selectTab('tintOnly')">
+                    <div class="package-term" data-en="Window Tint Only" data-ar="تظليل فقط">Window Tint Only</div>
+                    <div class="package-km" data-en="Premium window tinting service" data-ar="خدمة تظليل بنوعية ممتازة">Premium window tinting service</div>
+                    <div class="package-notes" data-en="Quick quote for sedan/SUV." data-ar="تسعير سريع للسيدان والـSUV.">Quick quote for sedan/SUV.</div>
+                </div>
+            </div>
+
+            <div class="inspection-notice" style="margin-top: 20px;">
+                <strong data-en="Pricing Note" data-ar="ملاحظة التسعير">Pricing Note</strong>
+                <span data-en="All prices shown are BEFORE VAT (VAT not included)." data-ar="جميع الأسعار المعروضة بدون ضريبة القيمة المضافة (غير شاملة VAT).">All prices shown are BEFORE VAT (VAT not included).</span>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2 class="gold-gradient-text" style="margin-bottom: 15px;" data-en="Vehicle Details" data-ar="بيانات السيارة">Vehicle Details</h2>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="carModel" data-en="Car Model (Free Text)" data-ar="موديل السيارة (كتابة حرة)">Car Model (Free Text)</label>
+                    <input id="carModel" type="text"
+                           data-en-placeholder="Example: BMW X7 M60i"
+                           data-ar-placeholder="مثال: BMW X7 M60i"
+                           placeholder="Example: BMW X7 M60i">
+                    <div class="error-message" id="carModelError" data-en="Please enter the car model." data-ar="يرجى إدخال موديل السيارة.">Please enter the car model.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicleType" data-en="Vehicle Type" data-ar="نوع السيارة">Vehicle Type</label>
+                    <select id="vehicleType">
+                        <option value="" data-en="Select" data-ar="اختر">Select</option>
+                        <option value="sedan" data-en="Sedan" data-ar="سيدان">Sedan</option>
+                        <option value="suv" data-en="SUV" data-ar="SUV / دفع رباعي">SUV</option>
+                    </select>
+                    <div class="error-message" id="vehicleTypeError" data-en="Please select sedan or SUV." data-ar="يرجى اختيار سيدان أو SUV.">Please select sedan or SUV.</div>
+                </div>
+
+                <div class="form-group" id="carColorGroup">
+                    <label for="carColorText" data-en="Car Color" data-ar="لون السيارة">Car Color</label>
+                    <input id="carColorText" type="text"
+                           data-en-placeholder="Example: Black / White / Grey"
+                           data-ar-placeholder="مثال: أسود / أبيض / رمادي"
+                           placeholder="Example: Black / White / Grey">
+                    <div class="error-message" id="carColorError" data-en="Please enter the car color." data-ar="يرجى إدخال لون السيارة.">Please enter the car color.</div>
+                </div>
+
+                <div class="form-group" id="tintShadeGroup">
+                    <label for="tintShade" data-en="Tint Shade" data-ar="نسبة التظليل">Tint Shade</label>
+                    <select id="tintShade">
+                        <option value="" data-en="Select" data-ar="اختر">Select</option>
+                        <option value="50" data-en="50%" data-ar="50%">50%</option>
+                        <option value="70" data-en="70%" data-ar="70%">70%</option>
+                    </select>
+                    <div class="error-message" id="tintShadeError" data-en="Please select a tint shade." data-ar="يرجى اختيار نسبة التظليل.">Please select a tint shade.</div>
+                </div>
+
+                
+                <div class="form-group hidden" id="ppfExistingGroup">
+                    <label for="hasExistingPPF" data-en="Existing PPF Installed?" data-ar="هل يوجد PPF مركّب مسبقاً؟">Existing PPF Installed?</label>
+                    <select id="hasExistingPPF">
+                        <option value="no" data-en="No" data-ar="لا">No</option>
+                        <option value="yes" data-en="Yes (Removal Required)" data-ar="نعم (يتطلب إزالة)">Yes (Removal Required)</option>
+                    </select>
+                </div>
+
+                <div class="form-group hidden" id="tintExistingGroup">
+                    <label for="hasExistingTint" data-en="Existing Window Tint?" data-ar="هل يوجد تظليل مسبقاً؟">Existing Window Tint?</label>
+                    <select id="hasExistingTint">
+                        <option value="no" data-en="No" data-ar="لا">No</option>
+                        <option value="yes" data-en="Yes (Removal Required)" data-ar="نعم (يتطلب إزالة)">Yes (Removal Required)</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group" id="ppfFinishGroup">
+                    <label for="ppfFinish" data-en="PPF Finish" data-ar="نوع الـPPF">PPF Finish</label>
+                    <select id="ppfFinish">
+                        <option value="" data-en="Select" data-ar="اختر">Select</option>
+                        <option value="Gloss" data-en="Glossy / Clear" data-ar="لمّاع / شفاف">Glossy / Clear</option>
+                        <option value="Matte" data-en="Matte" data-ar="مطفي">Matte</option>
+                    </select>
+                    <div class="error-message" id="ppfFinishError" data-en="Please select a PPF finish." data-ar="يرجى اختيار نوع الـPPF.">Please select a PPF finish.</div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="calcBtn" onclick="calculatePackages()" data-en="Get Quote" data-ar="احصل على السعر">Get Quote</button>
+        </div>
+
+        <div class="glass-card results-section" id="resultsSection">
+            <h2 class="gold-gradient-text" data-en="Your Quote" data-ar="عرض السعر">Your Quote</h2>
+
+            <div class="final-price-display">
+                <div class="total-label"><span class="total-gold" data-en="Total" data-ar="الإجمالي">Total</span> <span class="total-red" data-en="(Before VAT)" data-ar="(بدون VAT)">(Before VAT)</span></div>
+                <div class="final-price-amount" id="finalPriceAmount">AED 0</div>
+                <div style="color: var(--gold-light); font-size: 0.95rem;" id="quoteSummary"></div>
+            </div>
+
+            <div class="inspection-notice">
+                <strong data-en="What’s Included" data-ar="المحتويات">What’s Included</strong>
+                <div id="includedList" style="margin-top: 10px;"></div>
+            </div>
+
+            <div class="inspection-notice">
+                <strong data-en="PPF Warranty & Care Guide (Key Points)" data-ar="ضمان وتعليمات العناية بالـPPF (مختصر)">PPF Warranty & Care Guide (Key Points)</strong>
+                <div id="careGuide" style="margin-top: 10px;"></div>
+            </div>
+
+            <div style="display:flex; justify-content:center;">
+                <button class="btn-whatsapp" id="whatsappBtn" onclick="sendWhatsApp()">
+                    <span style="font-size: 1.2rem;">💬</span>
+                    <span data-en="Send Quote via WhatsApp" data-ar="إرسال العرض عبر واتساب">Send Quote via WhatsApp</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+let currentLang = 'en';
+let currentSelection = { tab: 'ppfPackage', quote: null };
+
+function setLanguage(lang, btn) {
+    currentLang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('[data-en]').forEach(el => {
+        if (el.tagName === 'INPUT') {
+            if (el.hasAttribute('data-en-placeholder')) {
+                el.placeholder = el.getAttribute(lang === 'ar' ? 'data-ar-placeholder' : 'data-en-placeholder');
+            }
+        } else if (el.tagName === 'OPTION') {
+            if (el.hasAttribute('data-ar')) {
+                el.textContent = lang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+            }
+        } else {
+            el.textContent = el.getAttribute('data-' + lang);
+        }
+    });
+
+    // Re-render results (if already calculated) in the selected language
+    if (document.getElementById('resultsSection').style.display === 'block') {
+        calculatePackages(true);
+    }
+}
+
+const PRICES = {
+    ppfPackage: { sedan: 6800, suv: 8800 },
+    ppfOnly:    { sedan: 6500, suv: 8500 },
+    tintOnly:   { sedan: 550,  suv: 780  }
+};
+
+function selectTab(tabKey) {
+    currentSelection.tab = tabKey;
+
+    document.querySelectorAll('#tabGrid .package-card').forEach(card => {
+        card.classList.toggle('selected', card.getAttribute('data-tab') === tabKey);
+    });
+
+    const ppfFinishGroup = document.getElementById('ppfFinishGroup');
+    const ppfFinish = document.getElementById('ppfFinish');
+    const requiresPPF = (tabKey === 'ppfPackage' || tabKey === 'ppfOnly');
+    if (requiresPPF) ppfFinishGroup.classList.remove('hidden');
+    else { ppfFinishGroup.classList.add('hidden'); ppfFinish.value=''; clearError(ppfFinish, document.getElementById('ppfFinishError')); }
+
+    const tintShadeGroup = document.getElementById('tintShadeGroup');
+    const tintShade = document.getElementById('tintShade');
+    const requiresTint = (tabKey === 'ppfPackage' || tabKey === 'tintOnly');
+    if (requiresTint) tintShadeGroup.classList.remove('hidden');
+    else { tintShadeGroup.classList.add('hidden'); tintShade.value=''; clearError(tintShade, document.getElementById('tintShadeError')); }
+
+    const carColorGroup = document.getElementById('carColorGroup');
+    const carColorText = document.getElementById('carColorText');
+    const requiresColor = (tabKey === 'ppfPackage' || tabKey === 'ppfOnly');
+    if (requiresColor) carColorGroup.classList.remove('hidden');
+    else { carColorGroup.classList.add('hidden'); carColorText.value=''; clearError(carColorText, document.getElementById('carColorError')); }
+
+    
+    // Existing PPF removal only for PPF Package
+    const ppfExistingGroup = document.getElementById('ppfExistingGroup');
+    const hasExistingPPF = document.getElementById('hasExistingPPF');
+    const requiresPPFRemovalField = (tabKey === 'ppfPackage');
+    if (requiresPPFRemovalField) {
+        ppfExistingGroup.classList.remove('hidden');
+    } else {
+        ppfExistingGroup.classList.add('hidden');
+        hasExistingPPF.value = 'no';
+    }
+
+    // Existing tint removal for PPF Package and Tint Only
+    const tintExistingGroup = document.getElementById('tintExistingGroup');
+    const hasExistingTint = document.getElementById('hasExistingTint');
+    const requiresTintRemovalField = (tabKey === 'ppfPackage' || tabKey === 'tintOnly');
+    if (requiresTintRemovalField) {
+        tintExistingGroup.classList.remove('hidden');
+    } else {
+        tintExistingGroup.classList.add('hidden');
+        hasExistingTint.value = 'no';
+    }
+
+
+    hideResults();
+}
+
+function showError(el, errEl) { el.classList.add('error'); if (errEl) errEl.classList.add('show'); }
+function clearError(el, errEl) { el.classList.remove('error'); if (errEl) errEl.classList.remove('show'); }
+
+function validateInputs() {
+    let ok = true;
+
+    const carModel = document.getElementById('carModel');
+    const vehicleType = document.getElementById('vehicleType');
+    const carColorText = document.getElementById('carColorText');
+    const tintShade = document.getElementById('tintShade');
+    const ppfFinish = document.getElementById('ppfFinish');
+
+    clearError(carModel, document.getElementById('carModelError'));
+    clearError(vehicleType, document.getElementById('vehicleTypeError'));
+    clearError(carColorText, document.getElementById('carColorError'));
+    clearError(tintShade, document.getElementById('tintShadeError'));
+    clearError(ppfFinish, document.getElementById('ppfFinishError'));
+
+    if (!carModel.value.trim()) { showError(carModel, document.getElementById('carModelError')); ok = false; }
+    if (!vehicleType.value) { showError(vehicleType, document.getElementById('vehicleTypeError')); ok = false; }
+
+    const needsColor = (currentSelection.tab === 'ppfPackage' || currentSelection.tab === 'ppfOnly');
+    if (needsColor && !carColorText.value.trim()) { showError(carColorText, document.getElementById('carColorError')); ok = false; }
+
+    const needsTint = (currentSelection.tab === 'ppfPackage' || currentSelection.tab === 'tintOnly');
+    if (needsTint && !tintShade.value) { showError(tintShade, document.getElementById('tintShadeError')); ok = false; }
+
+    const needsPPF = (currentSelection.tab === 'ppfPackage' || currentSelection.tab === 'ppfOnly');
+    if (needsPPF && !ppfFinish.value) { showError(ppfFinish, document.getElementById('ppfFinishError')); ok = false; }
+
+    return ok;
+}
+
+function getColorValue() {
+    const needsColor = (currentSelection.tab === 'ppfPackage' || currentSelection.tab === 'ppfOnly');
+    if (!needsColor) return (currentLang === 'ar' ? 'غير مطلوب' : 'Not required');
+    const v = document.getElementById('carColorText').value.trim();
+    return v ? v : (currentLang === 'ar' ? 'غير محدد' : 'Not specified');
+}
+
+function formatAED(n) { return 'AED ' + Number(n).toLocaleString('en-US'); }
+
+function buildIncluded(tabKey) {
+    if (tabKey === 'ppfPackage') return [
+        {en:'Full Body PPF (Gloss or Matte)', ar:'PPF كامل للسيارة (لمّاع أو مطفي)'},
+        {en:'Window Tinting', ar:'تظليل الزجاج'},
+        {en:'Ceramic Coating (Inside & Outside)', ar:'سيراميك (داخلي وخارجي)'}
+    ];
+    if (tabKey === 'ppfOnly') return [
+        {en:'Full Body PPF (Gloss or Matte)', ar:'PPF كامل للسيارة (لمّاع أو مطفي)'}
+    ];
+    return [
+        {en:'Premium Window Tinting', ar:'تظليل زجاج بنوعية ممتازة'}
+    ];
+}
+
+function buildCareGuide(tabKey, ppfFinish) {
+    if (tabKey === 'tintOnly') {
+        return {
+            intro: { en:"Basic tint care (recommended):", ar:"تعليمات العناية بالتظليل (مُوصى بها):" },
+            bullets: [
+                {en:"Do not wash windows for 48–72 hours after installation.", ar:"لا تغسل الزجاج لمدة 48–72 ساعة بعد التركيب."},
+                {en:"Use soft microfiber and non-ammonia cleaners.", ar:"استخدم مايكروفايبر ومنظفات بدون أمونيا."},
+                {en:"Avoid sharp tools or scraping on the film.", ar:"تجنب الأدوات الحادة أو الحك على الفيلم."}
+            ]
+        };
+    }
+
+    const commonBullets = [
+        {en:"After installation: No washing for 48–72 hours.", ar:"بعد التركيب: لا تغسل السيارة لمدة 48–72 ساعة."},
+        {en:"Wash using pH-neutral car shampoo + soft microfiber.", ar:"اغسل بشامبو متعادل pH + مايكروفايبر ناعم."},
+        {en:"Avoid automatic washes with hard brushes.", ar:"تجنب المغاسل الأوتوماتيكية ذات الفرش الصلبة."},
+        {en:"Remove bird droppings / bugs / sap as soon as possible.", ar:"قم بإزالة فضلات الطيور / الحشرات / الصمغ بأسرع وقت ممكن."},
+        {en:"Avoid strong chemicals and unknown cleaners.", ar:"تجنب المواد الكيميائية القوية والمنظفات غير المعروفة."},
+        {en:"When using pressure wash: keep 30–50 cm distance, don’t spray directly on edges.", ar:"عند استخدام ضغط الماء: حافظ على مسافة 30–50 سم ولا ترش مباشرة على الحواف."}
+    ];
+
+    const warrantyCovers = [
+        {en:"Peeling or lifting (under normal use)", ar:"تقشر أو رفع (ضمن الاستخدام الطبيعي)"},
+        {en:"Cracking or delamination", ar:"تشقق أو انفصال طبقات"},
+        {en:"Adhesive failure", ar:"فشل اللاصق"},
+        {en:"Abnormal discoloration (when maintained correctly)", ar:"تغير لون غير طبيعي (عند العناية الصحيحة)"}
+    ];
+
+    if (ppfFinish === 'Matte') {
+        return {
+            intro: { en:"Matte PPF — to keep the full 10-year warranty:", ar:"PPF مطفي — للحفاظ على ضمان 10 سنوات بالكامل:" },
+            bullets: [
+                {en:"Recommended: 2 maintenance visits per year at our shop (deep cleaning + maintenance).", ar:"موصى به: زيارتان صيانة سنوياً في المركز (تنظيف عميق + صيانة)."},
+                {en:"Minimum: at least 1 deep cleaning per year.", ar:"الحد الأدنى: تنظيف عميق مرة واحدة سنوياً."},
+                {en:"First-year rule: If there is no maintenance visit during the first 12 months, warranty adjusts to 5 years.", ar:"قاعدة السنة الأولى: إذا لم تتم زيارة صيانة خلال أول 12 شهر، يتم تعديل الضمان إلى 5 سنوات."},
+                {en:"Matte PPF: never polish or use wax that adds shine (it can damage the matte look).", ar:"PPF مطفي: لا تستخدم تلميع أو شمع يضيف لمعان (قد يضر بالمظهر المطفي)."},
+                ...commonBullets
+            ],
+            coversTitle: {en:"What the warranty covers (manufacturing/installation):", ar:"ما يغطيه الضمان (تصنيع/تركيب):"},
+            covers: warrantyCovers
+        };
+    }
+
+    return {
+        intro: { en:"Glossy PPF — to keep the shine like new:", ar:"PPF لمّاع — للحفاظ على اللمعة كالجديد:" },
+        bullets: [
+            {en:"Recommended: 1 deep cleaning + detailing service per year.", ar:"موصى به: تنظيف عميق + ديتيلينغ مرة سنوياً."},
+            {en:"Helps remove traffic film, water spots, and contaminants that reduce shine over time.", ar:"يساعد على إزالة طبقات الطريق وبقع الماء والملوثات التي تقلل اللمعة مع الوقت."},
+            ...commonBullets
+        ],
+        coversTitle: {en:"What the warranty covers (manufacturing/installation):", ar:"ما يغطيه الضمان (تصنيع/تركيب):"},
+        covers: warrantyCovers
+    };
+}
+
+function hideResults() { document.getElementById('resultsSection').style.display = 'none'; }
+
+function renderBullets(items) {
+    const ul = document.createElement('ul');
+    ul.style.margin = '10px 0 0 18px';
+    ul.style.color = 'var(--text-secondary)';
+    items.forEach(it => {
+        const li = document.createElement('li');
+        li.textContent = (currentLang === 'ar') ? it.ar : it.en;
+        li.style.margin = '6px 0';
+        ul.appendChild(li);
+    });
+    return ul;
+}
+
+function renderCareGuide(tabKey, ppfFinish) {
+    const guide = buildCareGuide(tabKey, ppfFinish);
+    const wrap = document.createElement('div');
+
+    const intro = document.createElement('div');
+    intro.style.color = 'var(--gold-light)';
+    intro.style.fontWeight = '600';
+    intro.textContent = (currentLang === 'ar') ? guide.intro.ar : guide.intro.en;
+    wrap.appendChild(intro);
+
+    wrap.appendChild(renderBullets(guide.bullets));
+
+    if (tabKey !== 'tintOnly' && guide.covers && guide.covers.length) {
+        const t = document.createElement('div');
+        t.style.marginTop = '14px';
+        t.style.color = 'var(--gold-primary)';
+        t.style.fontWeight = '700';
+        t.textContent = (currentLang === 'ar') ? guide.coversTitle.ar : guide.coversTitle.en;
+        wrap.appendChild(t);
+        wrap.appendChild(renderBullets(guide.covers));
+    }
+
+    return wrap;
+}
+
+function calculatePackages(isRerender=false) {
+    if (!isRerender && !validateInputs()) { hideResults(); return; }
+
+    // During rerender, if nothing calculated yet, skip.
+    if (isRerender && !currentSelection.quote) return;
+
+    const tabKey = currentSelection.tab;
+
+    const vehicleType = document.getElementById('vehicleType').value;
+    const carModel = document.getElementById('carModel').value.trim();
+    const color = getColorValue();
+    const ppfFinish = document.getElementById('ppfFinish').value;
+    const tintShade = document.getElementById('tintShade').value;
+
+    // If rerender and vehicleType empty (shouldn't happen), use stored quote
+    const resolvedType = vehicleType || (currentSelection.quote ? currentSelection.quote.vehicleType : 'sedan');
+    const basePrice = PRICES[tabKey][resolvedType];
+
+    // Removal fees (if applicable)
+    const hasExistingPPF = document.getElementById('hasExistingPPF') ? document.getElementById('hasExistingPPF').value : 'no';
+    const hasExistingTint = document.getElementById('hasExistingTint') ? document.getElementById('hasExistingTint').value : 'no';
+
+    let removalFee = 0;
+    if (tabKey === 'ppfPackage' && hasExistingPPF === 'yes') {
+        removalFee += (resolvedType === 'suv') ? 2300 : 1500;
+    }
+    if ((tabKey === 'ppfPackage' || tabKey === 'tintOnly') && hasExistingTint === 'yes') {
+        removalFee += (resolvedType === 'suv') ? 200 : 150;
+    }
+
+    const price = basePrice + removalFee;
+
+    const included = buildIncluded(tabKey);
+
+    currentSelection.quote = {
+        tabKey, vehicleType: resolvedType, carModel, color, ppfFinish, tintShade,
+        hasExistingPPF, hasExistingTint, basePrice, removalFee, price
+    };
+
+    document.getElementById('finalPriceAmount').textContent = formatAED(price);
+
+    const tabName = (tabKey === 'ppfPackage')
+        ? (currentLang === 'ar' ? 'باقة حماية شاملة (PPF)' : 'PPF Package')
+        : (tabKey === 'ppfOnly')
+            ? (currentLang === 'ar' ? 'PPF فقط' : 'PPF Only')
+            : (currentLang === 'ar' ? 'تظليل فقط' : 'Window Tint Only');
+
+    const typeText = (vehicleType === 'sedan') ? (currentLang === 'ar' ? 'سيدان' : 'Sedan') : (currentLang === 'ar' ? 'SUV' : 'SUV');
+
+    const finishText = (tabKey === 'tintOnly') ? '' : (' • ' + ((ppfFinish === 'Matte') ? (currentLang === 'ar' ? 'مطفي' : 'Matte') : (currentLang === 'ar' ? 'لمّاع/شفاف' : 'Gloss/Clear')));
+
+    const tintText = (tabKey === 'ppfPackage' || tabKey === 'tintOnly')
+        ? (' • ' + (currentLang === 'ar' ? ('تظليل ' + tintShade + '%') : ('Tint ' + tintShade + '%')))
+        : '';
+
+    const summary = document.getElementById('quoteSummary');
+        const feeText = (removalFee > 0)
+        ? (' • ' + (currentLang === 'ar' ? ('إزالة: ' + formatAED(removalFee)) : ('Removal: ' + formatAED(removalFee))))
+        : '';
+    summary.textContent = `${tabName} • ${typeText}${finishText}${tintText}${feeText} • ${carModel} • ${color} • ${(currentLang === 'ar') ? 'السعر بدون VAT' : 'Price before VAT'}`;
+
+    const includedList = document.getElementById('includedList');
+    includedList.innerHTML = '';
+    includedList.appendChild(renderBullets(included));
+
+    const care = document.getElementById('careGuide');
+    care.innerHTML = '';
+    care.appendChild(renderCareGuide(tabKey, ppfFinish));
+
+    const results = document.getElementById('resultsSection');
+    results.style.display = 'block';
+
+    // Auto-scroll after a quote is produced
+    if (!isRerender) results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildWhatsAppMessage() {
+    const q = currentSelection.quote;
+    if (!q) return '';
+
+    const tabNameEN = (q.tabKey === 'ppfPackage') ? 'PPF Package (PPF + Tint + Ceramic In/Out)'
+                    : (q.tabKey === 'ppfOnly') ? 'PPF Only'
+                    : 'Window Tint Only';
+
+    const tabNameAR = (q.tabKey === 'ppfPackage') ? 'باقة حماية شاملة (PPF + تظليل + سيراميك)'
+                    : (q.tabKey === 'ppfOnly') ? 'PPF فقط'
+                    : 'تظليل فقط';
+
+    const typeEN = (q.vehicleType === 'sedan') ? 'Sedan' : 'SUV';
+    const typeAR = (q.vehicleType === 'sedan') ? 'سيدان' : 'SUV';
+
+    const finishEN = (q.tabKey === 'tintOnly') ? '' : (q.ppfFinish === 'Matte' ? 'Matte' : 'Gloss/Clear');
+    const finishAR = (q.tabKey === 'tintOnly') ? '' : (q.ppfFinish === 'Matte' ? 'مطفي' : 'لمّاع/شفاف');
+
+    const linesEN = [
+        '1885 Auto Care Quote (Before VAT)',
+        `Service: ${tabNameEN}`,
+        `Vehicle: ${q.carModel}`,
+        `Type: ${typeEN}`,
+    ];
+
+    if (q.tabKey === 'ppfPackage' || q.tabKey === 'tintOnly') linesEN.push(`Tint Shade: ${q.tintShade}%`);
+    if (q.tabKey !== 'tintOnly') linesEN.push(`PPF Finish: ${finishEN}`);
+    if (q.tabKey !== 'tintOnly') linesEN.push(`Color: ${q.color}`);
+
+    linesEN.push(`Base (Before VAT): ${formatAED(q.basePrice)}`);
+    if (q.removalFee && q.removalFee > 0) linesEN.push(`Removal Fees: ${formatAED(q.removalFee)}`);
+    linesEN.push(`Total (Before VAT): ${formatAED(q.price)}`);
+    linesEN.push('');
+    linesEN.push('Note: Prices shown exclude VAT.');
+
+    const linesAR = [
+        'عرض سعر 1885 (بدون VAT)',
+        `الخدمة: ${tabNameAR}`,
+        `السيارة: ${q.carModel}`,
+        `النوع: ${typeAR}`,
+    ];
+
+    if (q.tabKey === 'ppfPackage' || q.tabKey === 'tintOnly') linesAR.push(`نسبة التظليل: ${q.tintShade}%`);
+    if (q.tabKey !== 'tintOnly') linesAR.push(`نوع الـPPF: ${finishAR}`);
+    if (q.tabKey !== 'tintOnly') linesAR.push(`اللون: ${q.color}`);
+
+    linesAR.push(`الأساس (بدون VAT): ${formatAED(q.basePrice)}`);
+    if (q.removalFee && q.removalFee > 0) linesAR.push(`رسوم الإزالة: ${formatAED(q.removalFee)}`);
+    linesAR.push(`الإجمالي (بدون VAT): ${formatAED(q.price)}`);
+    linesAR.push('');
+    linesAR.push('ملاحظة: جميع الأسعار بدون ضريبة القيمة المضافة.');
+
+    return (currentLang === 'ar') ? linesAR.join('\n') : linesEN.join('\n');
+}
+
+function sendWhatsApp() {
+    const msg = buildWhatsAppMessage();
+    if (!msg) return;
+    const phone = '971501187630';
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+}
+
+// init
+selectTab('ppfPackage');
+</script>
+</body>
+</html>
