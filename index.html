@@ -545,7 +545,7 @@ function selectTab(tabKey) {
     // Existing PPF removal only for PPF Package
     const ppfExistingGroup = document.getElementById('ppfExistingGroup');
     const hasExistingPPF = document.getElementById('hasExistingPPF');
-    const requiresPPFRemovalField = (tabKey === 'ppfPackage');
+    const requiresPPFRemovalField = (tabKey === 'ppfPackage' || tabKey === 'ppfOnly');
     if (requiresPPFRemovalField) {
         ppfExistingGroup.classList.remove('hidden');
     } else {
@@ -694,8 +694,7 @@ function buildCareGuide(tabKey, ppfFinish, color) {
         intro: { en:"Glossy PPF — 10-Year Warranty", ar:"PPF لمّاع — ضمان 10 سنوات" },
         bullets: [
             {en: extraGlossRule.en, ar: extraGlossRule.ar},
-            {en:"Recommended: 1 deep cleaning + detailing service per year.", ar:"موصى به: تنظيف عميق + ديتيلينغ مرة سنوياً."},
-            {en:"Helps remove traffic film, water spots, and contaminants that reduce shine over time.", ar:"يساعد على إزالة طبقات الطريق وبقع الماء والملوثات التي تقلل اللمعة مع الوقت."},
+            {en:"Recommended: 1 annual deep cleaning + detailing service (removes traffic film, water spots, and contaminants that reduce shine over time).", ar:"موصى به: تنظيف عميق + ديتيلينغ مرة سنوياً (يزيل طبقات الطريق وبقع الماء والملوثات التي تقلل اللمعة مع الوقت)."},
             ...commonBullets
         ],
         coversTitle: {en:"What the warranty covers (manufacturing/installation):", ar:"ما يغطيه الضمان (تصنيع/تركيب):"},
@@ -766,7 +765,7 @@ function calculatePackages(isRerender=false) {
     const hasExistingTint = document.getElementById('hasExistingTint') ? document.getElementById('hasExistingTint').value : 'no';
 
     let removalFee = 0;
-    if (tabKey === 'ppfPackage' && hasExistingPPF === 'yes') {
+    if ((tabKey === 'ppfPackage' || tabKey === 'ppfOnly') && hasExistingPPF === 'yes') {
         removalFee += (resolvedType === 'suv') ? 2300 : 1500;
     }
     if ((tabKey === 'ppfPackage' || tabKey === 'tintOnly') && hasExistingTint === 'yes') {
