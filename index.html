@@ -43,6 +43,7 @@
             position: relative;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         .bg-pattern {
@@ -443,10 +444,26 @@
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 18px; text-align: center; }
             [dir="rtl"] header { flex-direction: column; }
-            .container { padding: 18px; }
-            .glass-card { padding: 24px; }
+            .container { padding: 16px; }
+            .glass-card { padding: 22px 18px; }
             .form-grid { grid-template-columns: 1fr; }
             .package-grid { grid-template-columns: 1fr; }
+            .final-price-display { padding: 26px 16px; }
+            .final-price-amount { font-size: clamp(1.8rem, 9vw, 2.7rem); }
+            .price-original { font-size: 1.05rem; }
+            .mazaya-toggle { gap: 10px; padding: 14px; }
+            .mazaya-title { font-size: 0.92rem; }
+            .brand { flex-wrap: wrap; justify-content: center; gap: 14px; }
+            .logo, .logo-fallback { width: 58px; height: 58px; }
+            .brand-name { font-size: 1.1rem; text-align: center; }
+            .page-title { font-size: clamp(1.7rem, 7vw, 2.3rem); }
+            .hero-sub { font-size: 0.95rem; }
+            .lang-btn { padding: 10px 18px; }
+        }
+
+        @media (max-width: 380px) {
+            .final-price-amount { font-size: clamp(1.5rem, 8vw, 2rem); }
+            .mazaya-save { font-size: 0.8rem; padding: 6px 12px; }
         }
 
         /* Respect users who prefer reduced motion */
@@ -518,10 +535,12 @@
             text-decoration-color: rgba(255,255,255,0.45); margin-bottom: 2px;
         }
         .mazaya-save {
-            display: inline-flex; align-items: center; gap: 8px;
-            margin: 2px auto 6px; padding: 6px 14px;
+            display: flex; width: fit-content; max-width: 100%;
+            align-items: center; justify-content: center; gap: 8px;
+            margin: 12px auto 4px; padding: 6px 14px;
             background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.35);
             border-radius: 999px; color: #7ee2a8; font-size: 0.86rem; font-weight: 600;
+            text-align: center;
         }
         .mazaya-instore { font-size: 0.82rem; color: var(--text-secondary); margin-top: 10px; }
 </style>
