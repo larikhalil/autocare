@@ -458,6 +458,72 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        /* === Service groups === */
+        .svc-group { margin-bottom: 26px; }
+        .svc-group:last-child { margin-bottom: 0; }
+        .svc-group-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--gold-primary);
+            margin: 4px 0 14px; display: flex; align-items: center; gap: 12px;
+        }
+        .svc-group-title::after {
+            content: ''; flex: 1; height: 1px;
+            background: linear-gradient(90deg, var(--border-gold), transparent);
+        }
+        [dir="rtl"] .svc-group-title::after { background: linear-gradient(270deg, var(--border-gold), transparent); }
+        .svc-group .package-grid { margin: 0; }
+
+        /* === Mazaya cardholder toggle === */
+        .mazaya-toggle {
+            display: flex; align-items: center; gap: 14px;
+            padding: 16px 18px; margin: 4px 0 22px;
+            background: linear-gradient(180deg, rgba(212,175,55,0.08), rgba(212,175,55,0.03));
+            border: 1px solid var(--border-gold); border-radius: var(--r-md);
+            cursor: pointer; user-select: none;
+            transition: border-color 0.2s ease;
+        }
+        .mazaya-toggle:hover { border-color: var(--gold-soft); }
+        .mazaya-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .mazaya-switch {
+            flex: none; width: 46px; height: 26px; border-radius: 999px;
+            background: rgba(255,255,255,0.12); border: 1px solid var(--border-gold);
+            position: relative; transition: background 0.25s ease, border-color 0.25s ease;
+        }
+        .mazaya-switch::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: #fff; transition: transform 0.25s ease;
+        }
+        .mazaya-toggle input:checked + .mazaya-switch { background: var(--green-primary); border-color: var(--green-primary); }
+        .mazaya-toggle input:checked + .mazaya-switch::after { transform: translateX(20px); }
+        [dir="rtl"] .mazaya-switch::after { left: auto; right: 2px; }
+        [dir="rtl"] .mazaya-toggle input:checked + .mazaya-switch::after { transform: translateX(-20px); }
+        .mazaya-toggle input:focus-visible + .mazaya-switch { outline: 2px solid var(--gold-primary); outline-offset: 2px; }
+        .mazaya-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+        .mazaya-title { font-weight: 600; color: var(--ink); font-size: 0.98rem; }
+        .mazaya-sub { font-size: 0.78rem; color: var(--text-secondary); }
+        .mazaya-badge {
+            flex: none; font-family: 'Sora', sans-serif; font-weight: 700;
+            font-size: 0.85rem; color: #000; background: var(--gold-primary);
+            padding: 5px 12px; border-radius: 999px;
+        }
+
+        /* === Discounted price display === */
+        .price-original {
+            font-family: 'Sora', sans-serif; font-size: 1.2rem; font-weight: 600;
+            color: var(--text-secondary); text-decoration: line-through;
+            text-decoration-color: rgba(255,255,255,0.45); margin-bottom: 2px;
+        }
+        .mazaya-save {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin: 2px auto 6px; padding: 6px 14px;
+            background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.35);
+            border-radius: 999px; color: #7ee2a8; font-size: 0.86rem; font-weight: 600;
+        }
+        .mazaya-instore { font-size: 0.82rem; color: var(--text-secondary); margin-top: 10px; }
 </style>
 </head>
 
@@ -489,32 +555,74 @@
             <span class="section-eyebrow" aria-hidden="true"></span>
             <h2 class="gold-gradient-text" style="margin-bottom: 15px;" data-en="Choose a Service" data-ar="اختر الخدمة">Choose a Service</h2>
 
-            <div class="package-grid" id="tabGrid">
-                <div class="package-card selected" data-tab="ppfPackage" role="button" tabindex="0" aria-pressed="true" onclick="selectTab('ppfPackage')">
-                    <div class="pkg-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 4.5 5.5v5.3c0 4.7 3.2 8.4 7.5 9.7 4.3-1.3 7.5-5 7.5-9.7V5.5L12 2.5Z"/><path d="m8.7 11.8 2.3 2.3 4.3-4.6"/></svg>
+            <div id="tabGrid">
+                <div class="svc-group">
+                    <div class="svc-group-title" data-en="Full-Body Protection" data-ar="حماية شاملة للسيارة">Full-Body Protection</div>
+                    <div class="package-grid">
+                        <div class="package-card selected" data-tab="ppfPackage" role="button" tabindex="0" aria-pressed="true" onclick="selectTab('ppfPackage')">
+                            <div class="pkg-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 4.5 5.5v5.3c0 4.7 3.2 8.4 7.5 9.7 4.3-1.3 7.5-5 7.5-9.7V5.5L12 2.5Z"/><path d="m8.7 11.8 2.3 2.3 4.3-4.6"/></svg>
+                            </div>
+                            <div class="package-term" data-en="PPF Package" data-ar="باقة حماية شاملة (PPF)">PPF Package</div>
+                            <div class="package-km" data-en="PPF + Window Tint + Ceramic (Inside & Outside)" data-ar="PPF + تظليل + سيراميك (داخلي وخارجي)">PPF + Window Tint + Ceramic (Inside & Outside)</div>
+                            <div class="package-notes" data-en="Best value bundle for full protection." data-ar="أفضل قيمة لحماية شاملة.">Best value bundle for full protection.</div>
+                        </div>
+
+                        <div class="package-card" data-tab="ppfOnly" role="button" tabindex="0" aria-pressed="false" onclick="selectTab('ppfOnly')">
+                            <div class="pkg-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.6A2.6 2.6 0 0 1 6.6 4H15l5 5v8.4A2.6 2.6 0 0 1 17.4 20H6.6A2.6 2.6 0 0 1 4 17.4Z"/><path d="M15 4v3.4A1.6 1.6 0 0 0 16.6 9H20"/><path d="m8.6 13.4 2.1 2.1 4-4.4"/></svg>
+                            </div>
+                            <div class="package-term" data-en="PPF Only" data-ar="PPF فقط">PPF Only</div>
+                            <div class="package-km" data-en="Paint Protection Film for the vehicle" data-ar="حماية الطلاء للفيلم على المركبة">Paint Protection Film for the vehicle</div>
+                            <div class="package-notes" data-en="Ideal if you already have tint/ceramic." data-ar="مثالي إذا لديك تظليل/سيراميك مسبقاً.">Ideal if you already have tint/ceramic.</div>
+                        </div>
+
+                        <div class="package-card" data-tab="tintOnly" role="button" tabindex="0" aria-pressed="false" onclick="selectTab('tintOnly')">
+                            <div class="pkg-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 17 6.7 8A2 2 0 0 1 8.6 6.5h6.8A2 2 0 0 1 17.3 8l2.2 9"/><path d="M3.8 17h16.4"/><path d="M12 6.5V17"/><path d="M15.8 10.5 13 17"/></svg>
+                            </div>
+                            <div class="package-term" data-en="Window Tint Only" data-ar="تظليل فقط">Window Tint Only</div>
+                            <div class="package-km" data-en="Premium window tinting service" data-ar="خدمة تظليل بنوعية ممتازة">Premium window tinting service</div>
+                            <div class="package-notes" data-en="Quick quote for sedan/SUV." data-ar="تسعير سريع للسيدان والـSUV.">Quick quote for sedan/SUV.</div>
+                        </div>
                     </div>
-                    <div class="package-term" data-en="PPF Package" data-ar="باقة حماية شاملة (PPF)">PPF Package</div>
-                    <div class="package-km" data-en="PPF + Window Tint + Ceramic (Inside & Outside)" data-ar="PPF + تظليل + سيراميك (داخلي وخارجي)">PPF + Window Tint + Ceramic (Inside & Outside)</div>
-                    <div class="package-notes" data-en="Best value bundle for full protection." data-ar="أفضل قيمة لحماية شاملة.">Best value bundle for full protection.</div>
                 </div>
 
-                <div class="package-card" data-tab="ppfOnly" role="button" tabindex="0" aria-pressed="false" onclick="selectTab('ppfOnly')">
-                    <div class="pkg-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.6A2.6 2.6 0 0 1 6.6 4H15l5 5v8.4A2.6 2.6 0 0 1 17.4 20H6.6A2.6 2.6 0 0 1 4 17.4Z"/><path d="M15 4v3.4A1.6 1.6 0 0 0 16.6 9H20"/><path d="m8.6 13.4 2.1 2.1 4-4.4"/></svg>
+                <div class="svc-group">
+                    <div class="svc-group-title" data-en="Front-Face Protection" data-ar="حماية الواجهة الأمامية">Front-Face Protection</div>
+                    <div class="package-grid">
+                        <div class="package-card" data-tab="frontPPF" role="button" tabindex="0" aria-pressed="false" onclick="selectTab('frontPPF')">
+                            <div class="pkg-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l1.3-3.7A2 2 0 0 1 8.2 8h7.6a2 2 0 0 1 1.9 1.3L19 13"/><path d="M4 13h16v3.5a1 1 0 0 1-1 1h-1.2a1 1 0 0 1-1-1V16H7.2v.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M7.6 15.2h.01M16.4 15.2h.01"/></svg>
+                            </div>
+                            <div class="package-term" data-en="Front PPF" data-ar="PPF أمامي">Front PPF</div>
+                            <div class="package-km" data-en="Transparent PPF — front only" data-ar="PPF شفاف — الواجهة الأمامية فقط">Transparent PPF — front only</div>
+                            <div class="package-notes" data-en="Covers bumper, hood, side mirrors & headlights." data-ar="يشمل الصدام والكبوت والمرايا والأضواء الأمامية.">Covers bumper, hood, side mirrors &amp; headlights.</div>
+                        </div>
+
+                        <div class="package-card" data-tab="frontPPFCeramic" role="button" tabindex="0" aria-pressed="false" onclick="selectTab('frontPPFCeramic')">
+                            <div class="pkg-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 13.5l1.2-3.4A1.9 1.9 0 0 1 6.5 8.8h6a1.9 1.9 0 0 1 1.8 1.3l1.1 3.4"/><path d="M2.8 13.5h13.4v3.2a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-.5H5.8v.5a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1z"/><path d="M5.9 15.4h.01M13.1 15.4h.01"/><path d="M19.4 7c1.3 1.5 2 2.6 2 3.6a2 2 0 0 1-4 0c0-1 .7-2.1 2-3.6z"/></svg>
+                            </div>
+                            <div class="package-term" data-en="Front PPF + Ceramic" data-ar="PPF أمامي + سيراميك">Front PPF + Ceramic</div>
+                            <div class="package-km" data-en="Transparent front PPF with ceramic coating" data-ar="PPF شفاف أمامي مع طلاء سيراميك">Transparent front PPF with ceramic coating</div>
+                            <div class="package-notes" data-en="Front protection plus added gloss & easier cleaning." data-ar="حماية أمامية مع لمعان إضافي وتنظيف أسهل.">Front protection plus added gloss &amp; easier cleaning.</div>
+                        </div>
                     </div>
-                    <div class="package-term" data-en="PPF Only" data-ar="PPF فقط">PPF Only</div>
-                    <div class="package-km" data-en="Paint Protection Film for the vehicle" data-ar="حماية الطلاء للفيلم على المركبة">Paint Protection Film for the vehicle</div>
-                    <div class="package-notes" data-en="Ideal if you already have tint/ceramic." data-ar="مثالي إذا لديك تظليل/سيراميك مسبقاً.">Ideal if you already have tint/ceramic.</div>
                 </div>
 
-                <div class="package-card" data-tab="tintOnly" role="button" tabindex="0" aria-pressed="false" onclick="selectTab('tintOnly')">
-                    <div class="pkg-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 17 6.7 8A2 2 0 0 1 8.6 6.5h6.8A2 2 0 0 1 17.3 8l2.2 9"/><path d="M3.8 17h16.4"/><path d="M12 6.5V17"/><path d="M15.8 10.5 13 17"/></svg>
+                <div class="svc-group">
+                    <div class="svc-group-title" data-en="Ceramic Coating" data-ar="طلاء سيراميك">Ceramic Coating</div>
+                    <div class="package-grid">
+                        <div class="package-card" data-tab="fullCeramic" role="button" tabindex="0" aria-pressed="false" onclick="selectTab('fullCeramic')">
+                            <div class="pkg-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3.2 3.6 5 6.4 5 8.9a5 5 0 0 1-10 0c0-2.5 1.8-5.3 5-8.9z"/><path d="M9.4 12.6a2.6 2.6 0 0 0 2.6 2.5"/></svg>
+                            </div>
+                            <div class="package-term" data-en="Full Ceramic (Ext & Int)" data-ar="سيراميك كامل (داخلي وخارجي)">Full Ceramic (Ext &amp; Int)</div>
+                            <div class="package-km" data-en="Exterior & interior ceramic coating" data-ar="طلاء سيراميك خارجي وداخلي">Exterior &amp; interior ceramic coating</div>
+                            <div class="package-notes" data-en="Includes FREE headlight & door-line PPF." data-ar="يشمل PPF مجاني للأضواء الأمامية وخطوط الأبواب.">Includes FREE headlight &amp; door-line PPF.</div>
+                        </div>
                     </div>
-                    <div class="package-term" data-en="Window Tint Only" data-ar="تظليل فقط">Window Tint Only</div>
-                    <div class="package-km" data-en="Premium window tinting service" data-ar="خدمة تظليل بنوعية ممتازة">Premium window tinting service</div>
-                    <div class="package-notes" data-en="Quick quote for sedan/SUV." data-ar="تسعير سريع للسيدان والـSUV.">Quick quote for sedan/SUV.</div>
                 </div>
             </div>
 
@@ -598,6 +706,16 @@
                 </div>
             </div>
 
+            <label class="mazaya-toggle" for="mazayaToggle">
+                <input type="checkbox" id="mazayaToggle" onchange="onMazayaToggle()">
+                <span class="mazaya-switch" aria-hidden="true"></span>
+                <span class="mazaya-text">
+                    <span class="mazaya-title" data-en="Mazaya cardholder" data-ar="حامل بطاقة مزايا">Mazaya cardholder</span>
+                    <span class="mazaya-sub" data-en="Switch on to apply your 10% discount" data-ar="فعّل الخيار لتطبيق خصم 10%">Switch on to apply your 10% discount</span>
+                </span>
+                <span class="mazaya-badge" aria-hidden="true">−10%</span>
+            </label>
+
             <button class="btn-primary" id="calcBtn" onclick="calculatePackages()" data-en="Get Quote" data-ar="احصل على السعر">Get Quote</button>
         </div>
 
@@ -607,9 +725,13 @@
 
             <div class="final-price-display">
                 <div class="total-label"><span class="total-gold" data-en="Total" data-ar="الإجمالي">Total</span> <span class="total-red" data-en="(Before VAT)" data-ar="(بدون VAT)">(Before VAT)</span></div>
+                <div class="price-original hidden" id="priceOriginal"></div>
                 <div class="final-price-amount" id="finalPriceAmount">AED 0</div>
+                <div class="mazaya-save hidden" id="mazayaSave"></div>
                 <div style="color: var(--gold-light); font-size: 0.95rem;" id="quoteSummary"></div>
                 <div id="inspectionDisclaimer" class="disclaimer hidden" style="margin-top:14px;"></div>
+                <div id="ceramicNote" class="disclaimer hidden" style="margin-top:14px;"></div>
+                <div id="mazayaNote" class="mazaya-instore hidden"></div>
             </div>
 
             <div class="inspection-notice">
@@ -618,7 +740,7 @@
             </div>
 
             <div class="inspection-notice">
-                <strong data-en="PPF Warranty & Care Guide (Key Points)" data-ar="ضمان وتعليمات العناية بالـPPF (مختصر)">PPF Warranty & Care Guide (Key Points)</strong>
+                <strong id="careHeader">PPF Warranty &amp; Care Guide (Key Points)</strong>
                 <div id="careGuide" style="margin-top: 10px;"></div>
             </div>
 
@@ -672,7 +794,30 @@ function setLanguage(lang, btn) {
 const PRICES = {
     ppfPackage: { sedan: 8160, suv: 10560 },
     ppfOnly:    { sedan: 7800, suv: 10200 },
-    tintOnly:   { sedan: 660,  suv: 936  }
+    tintOnly:   { sedan: 660,  suv: 936  },
+    frontPPF:        { sedan: 2500, suv: 2500 },
+    frontPPFCeramic: { sedan: 3500, suv: 3500 }
+};
+
+const CERAMIC_RANGE = { min: 1200, max: 1800 };
+const MAZAYA_RATE = 0.10;
+
+const TAB_NAMES = {
+    ppfPackage:      { en: 'PPF Package', ar: 'باقة حماية شاملة (PPF)' },
+    ppfOnly:         { en: 'PPF Only', ar: 'PPF فقط' },
+    tintOnly:        { en: 'Window Tint Only', ar: 'تظليل فقط' },
+    frontPPF:        { en: 'Front PPF', ar: 'PPF أمامي' },
+    frontPPFCeramic: { en: 'Front PPF + Ceramic', ar: 'PPF أمامي + سيراميك' },
+    fullCeramic:     { en: 'Full Ceramic (Ext & Int)', ar: 'سيراميك كامل (داخلي وخارجي)' }
+};
+
+const CARE_HEADERS = {
+    ppfPackage:      { en: 'PPF Warranty & Care Guide (Key Points)', ar: 'ضمان وتعليمات العناية بالـPPF (مختصر)' },
+    ppfOnly:         { en: 'PPF Warranty & Care Guide (Key Points)', ar: 'ضمان وتعليمات العناية بالـPPF (مختصر)' },
+    tintOnly:        { en: 'Tint Care Guide (Key Points)', ar: 'تعليمات العناية بالتظليل (مختصر)' },
+    frontPPF:        { en: 'PPF Care Guide (Key Points)', ar: 'تعليمات العناية بالـPPF (مختصر)' },
+    frontPPFCeramic: { en: 'PPF & Ceramic Care Guide (Key Points)', ar: 'تعليمات العناية بالـPPF والسيراميك (مختصر)' },
+    fullCeramic:     { en: 'Ceramic Care Guide (Key Points)', ar: 'تعليمات العناية بالسيراميك (مختصر)' }
 };
 
 function selectTab(tabKey) {
@@ -794,6 +939,21 @@ function animatePrice(el, target) {
     requestAnimationFrame(frame);
 }
 
+function formatRange(a, b) {
+    return 'AED ' + Number(a).toLocaleString('en-US') + ' – ' + Number(b).toLocaleString('en-US');
+}
+
+function setPriceText(el, text, sheen) {
+    if (sheen) { el.classList.remove('is-revealed'); void el.offsetWidth; el.classList.add('is-revealed'); }
+    el.textContent = text;
+}
+
+function onMazayaToggle() {
+    if (document.getElementById('resultsSection').style.display === 'block') {
+        calculatePackages(true);
+    }
+}
+
 function buildIncluded(tabKey) {
     if (tabKey === 'ppfPackage') return [
         {en:'Full Body PPF (Gloss or Matte)', ar:'PPF كامل للسيارة (لمّاع أو مطفي)'},
@@ -803,24 +963,24 @@ function buildIncluded(tabKey) {
     if (tabKey === 'ppfOnly') return [
         {en:'Full Body PPF (Gloss or Matte)', ar:'PPF كامل للسيارة (لمّاع أو مطفي)'}
     ];
+    if (tabKey === 'frontPPF') return [
+        {en:'Front PPF (Transparent) — bumper, hood, side mirrors, headlights', ar:'PPF أمامي (شفاف) — الصدام، الكبوت، المرايا، الأضواء الأمامية'}
+    ];
+    if (tabKey === 'frontPPFCeramic') return [
+        {en:'Front PPF (Transparent) — bumper, hood, side mirrors, headlights', ar:'PPF أمامي (شفاف) — الصدام، الكبوت، المرايا، الأضواء الأمامية'},
+        {en:'Ceramic Coating', ar:'طلاء سيراميك'}
+    ];
+    if (tabKey === 'fullCeramic') return [
+        {en:'Full Ceramic Coating (Exterior & Interior)', ar:'طلاء سيراميك كامل (خارجي وداخلي)'},
+        {en:'FREE headlight & door-line PPF', ar:'PPF مجاني للأضواء الأمامية وخطوط الأبواب'},
+        {en:'Protects paint, plastics, glass & upholstery (UV, dirt, water marks)', ar:'يحمي الطلاء والبلاستيك والزجاج والمفروشات (الأشعة، الأوساخ، بقع الماء)'}
+    ];
     return [
         {en:'Premium Window Tinting', ar:'تظليل زجاج بنوعية ممتازة'}
     ];
 }
 
 function buildCareGuide(tabKey, ppfFinish, color) {
-    // Tint-only: simple care tips
-    if (tabKey === 'tintOnly') {
-        return {
-            intro: { en:"Basic tint care (recommended):", ar:"تعليمات العناية بالتظليل (مُوصى بها):" },
-            bullets: [
-                {en:"Do not wash windows for 48–72 hours after installation.", ar:"لا تغسل الزجاج لمدة 48–72 ساعة بعد التركيب."},
-                {en:"Use soft microfiber and non-ammonia cleaners.", ar:"استخدم مايكروفايبر ومنظفات بدون أمونيا."},
-                {en:"Avoid sharp tools or scraping on the film.", ar:"تجنب الأدوات الحادة أو الحك على الفيلم."}
-            ]
-        };
-    }
-
     // Shared PPF bullets
     const commonBullets = [
         {en:"After installation: No washing for 48–72 hours.", ar:"بعد التركيب: لا تغسل السيارة لمدة 48–72 ساعة."},
@@ -837,6 +997,41 @@ function buildCareGuide(tabKey, ppfFinish, color) {
         {en:"Adhesive failure", ar:"فشل اللاصق"},
         {en:"Abnormal discoloration (when maintained correctly)", ar:"تغير لون غير طبيعي (عند العناية الصحيحة)"}
     ];
+
+    // Tint-only: simple care tips
+    if (tabKey === 'tintOnly') {
+        return {
+            intro: { en:"Basic tint care (recommended):", ar:"تعليمات العناية بالتظليل (مُوصى بها):" },
+            bullets: [
+                {en:"Do not wash windows for 48–72 hours after installation.", ar:"لا تغسل الزجاج لمدة 48–72 ساعة بعد التركيب."},
+                {en:"Use soft microfiber and non-ammonia cleaners.", ar:"استخدم مايكروفايبر ومنظفات بدون أمونيا."},
+                {en:"Avoid sharp tools or scraping on the film.", ar:"تجنب الأدوات الحادة أو الحك على الفيلم."}
+            ]
+        };
+    }
+
+    // Full Ceramic: ceramic care tips
+    if (tabKey === 'fullCeramic') {
+        return {
+            intro: { en:"Ceramic care (recommended):", ar:"العناية بالسيراميك (موصى بها):" },
+            bullets: [
+                {en:"Do not wash the car for 48–72 hours after application.", ar:"لا تغسل السيارة لمدة 48–72 ساعة بعد التطبيق."},
+                {en:"Wash with pH-neutral shampoo + soft microfiber.", ar:"اغسل بشامبو متعادل pH + مايكروفايبر ناعم."},
+                {en:"Avoid harsh chemicals and automatic brush washes.", ar:"تجنب المواد الكيميائية القوية والمغاسل الأوتوماتيكية ذات الفرش."},
+                {en:"Dry the car properly to prevent water spots.", ar:"جفّف السيارة جيداً لتجنب بقع الماء."}
+            ]
+        };
+    }
+
+    // Front-face PPF (transparent): care tips (no warranty-year claim)
+    if (tabKey === 'frontPPF' || tabKey === 'frontPPFCeramic') {
+        const bullets = commonBullets.slice();
+        if (tabKey === 'frontPPFCeramic') bullets.unshift({en:"Ceramic: wash with pH-neutral shampoo to keep the gloss and water beading.", ar:"السيراميك: اغسل بشامبو متعادل pH للحفاظ على اللمعان وتساقط الماء."});
+        return {
+            intro: { en:"PPF care (recommended):", ar:"العناية بالـPPF (موصى بها):" },
+            bullets: bullets
+        };
+    }
 
     // Normalize color for warranty rules
     const c = (color || '').toLowerCase();
@@ -933,18 +1128,19 @@ function calculatePackages(isRerender=false) {
     if (isRerender && !currentSelection.quote) return;
 
     const tabKey = currentSelection.tab;
+    const isRange = (tabKey === 'fullCeramic');
 
     const vehicleType = document.getElementById('vehicleType').value;
     const carModel = document.getElementById('carModel').value.trim();
     const color = getColorValue();
     const ppfFinish = document.getElementById('ppfFinish').value;
     const tintShade = document.getElementById('tintShade').value;
+    const mazaya = !!(document.getElementById('mazayaToggle') && document.getElementById('mazayaToggle').checked);
 
     // If rerender and vehicleType empty (shouldn't happen), use stored quote
     const resolvedType = vehicleType || (currentSelection.quote ? currentSelection.quote.vehicleType : 'sedan');
-    const basePrice = PRICES[tabKey][resolvedType];
 
-    // Removal fees (if applicable)
+    // Removal fees (full PPF / tint services only)
     const hasExistingPPF = document.getElementById('hasExistingPPF') ? document.getElementById('hasExistingPPF').value : 'no';
     const hasExistingTint = document.getElementById('hasExistingTint') ? document.getElementById('hasExistingTint').value : 'no';
 
@@ -956,42 +1152,85 @@ function calculatePackages(isRerender=false) {
         removalFee += (resolvedType === 'suv') ? 200 : 150;
     }
 
-    const price = basePrice + removalFee;
+    // Gross price (before discount). Full Ceramic is a range; everything else is a single value.
+    let basePrice = 0, grossMin, grossMax;
+    if (isRange) {
+        basePrice = CERAMIC_RANGE.min;
+        grossMin = CERAMIC_RANGE.min;
+        grossMax = CERAMIC_RANGE.max;
+    } else {
+        basePrice = PRICES[tabKey][resolvedType];
+        grossMin = grossMax = basePrice + removalFee;
+    }
+
+    // Mazaya 10% discount on the whole total
+    const discountMin = mazaya ? Math.round(grossMin * MAZAYA_RATE) : 0;
+    const discountMax = mazaya ? Math.round(grossMax * MAZAYA_RATE) : 0;
+    const netMin = grossMin - discountMin;
+    const netMax = grossMax - discountMax;
 
     const included = buildIncluded(tabKey);
 
     currentSelection.quote = {
         tabKey, vehicleType: resolvedType, carModel, color, ppfFinish, tintShade,
-        hasExistingPPF, hasExistingTint, basePrice, removalFee, price
+        hasExistingPPF, hasExistingTint, isRange, basePrice, removalFee,
+        grossMin, grossMax, netMin, netMax, mazaya, discountMin, discountMax
     };
 
+    // --- Price display ---
     const priceEl = document.getElementById('finalPriceAmount');
-    if (isRerender) priceEl.textContent = formatAED(price);
-    else animatePrice(priceEl, price);
+    const netText = isRange ? formatRange(netMin, netMax) : formatAED(netMin);
+    if (isRerender) setPriceText(priceEl, netText, false);
+    else if (isRange) setPriceText(priceEl, netText, true);
+    else animatePrice(priceEl, netMin);
 
-    const tabName = (tabKey === 'ppfPackage')
-        ? (currentLang === 'ar' ? 'باقة حماية شاملة (PPF)' : 'PPF Package')
-        : (tabKey === 'ppfOnly')
-            ? (currentLang === 'ar' ? 'PPF فقط' : 'PPF Only')
-            : (currentLang === 'ar' ? 'تظليل فقط' : 'Window Tint Only');
+    // Original (struck-through) + savings line, shown only with Mazaya on
+    const priceOriginal = document.getElementById('priceOriginal');
+    const mazayaSave = document.getElementById('mazayaSave');
+    const mazayaNote = document.getElementById('mazayaNote');
+    if (mazaya) {
+        priceOriginal.textContent = isRange ? formatRange(grossMin, grossMax) : formatAED(grossMin);
+        priceOriginal.classList.remove('hidden');
+        mazayaSave.textContent = isRange
+            ? (currentLang === 'ar' ? ('★ مزايا −10% (توفير حتى ' + formatAED(discountMax) + ')') : ('★ Mazaya −10% (save up to ' + formatAED(discountMax) + ')'))
+            : (currentLang === 'ar' ? ('★ مزايا −10% (توفير ' + formatAED(discountMin) + ')') : ('★ Mazaya −10% (you save ' + formatAED(discountMin) + ')'));
+        mazayaSave.classList.remove('hidden');
+        mazayaNote.textContent = (currentLang === 'ar') ? 'يلزم إبراز بطاقة مزايا سارية في المركز.' : 'Valid Mazaya card required in-store.';
+        mazayaNote.classList.remove('hidden');
+    } else {
+        priceOriginal.classList.add('hidden');
+        mazayaSave.classList.add('hidden');
+        mazayaNote.classList.add('hidden');
+    }
 
-    const typeText = (vehicleType === 'sedan') ? (currentLang === 'ar' ? 'سيدان' : 'Sedan') : (currentLang === 'ar' ? 'SUV' : 'SUV');
+    // Care-guide header per service
+    const careHeader = document.getElementById('careHeader');
+    if (careHeader && CARE_HEADERS[tabKey]) careHeader.textContent = CARE_HEADERS[tabKey][currentLang];
 
-    const finishText = (tabKey === 'tintOnly') ? '' : (' • ' + ((ppfFinish === 'Matte') ? (currentLang === 'ar' ? 'مطفي' : 'Matte') : (currentLang === 'ar' ? 'لمّاع/شفاف' : 'Gloss/Clear')));
+    const tabName = TAB_NAMES[tabKey][currentLang];
+    const typeText = (resolvedType === 'sedan') ? (currentLang === 'ar' ? 'سيدان' : 'Sedan') : (currentLang === 'ar' ? 'SUV' : 'SUV');
+
+    const hasFinish = (tabKey === 'ppfPackage' || tabKey === 'ppfOnly');
+    const finishText = hasFinish ? (' • ' + ((ppfFinish === 'Matte') ? (currentLang === 'ar' ? 'مطفي' : 'Matte') : (currentLang === 'ar' ? 'لمّاع/شفاف' : 'Gloss/Clear'))) : '';
 
     const tintText = (tabKey === 'ppfPackage' || tabKey === 'tintOnly')
         ? (' • ' + (currentLang === 'ar' ? ('تظليل ' + tintShade + '%') : ('Tint ' + tintShade + '%')))
         : '';
 
-    const summary = document.getElementById('quoteSummary');
-        const feeText = (removalFee > 0)
+    const colorText = hasFinish ? (' • ' + color) : '';
+
+    const feeText = (removalFee > 0)
         ? (' • ' + (currentLang === 'ar' ? ('إزالة: ' + formatAED(removalFee)) : ('Removal: ' + formatAED(removalFee))))
         : '';
-    summary.textContent = `${tabName} • ${typeText}${finishText}${tintText}${feeText} • ${carModel} • ${color} • ${(currentLang === 'ar') ? 'السعر بدون VAT' : 'Price before VAT'}`;
 
-    // Inspection disclaimer (PPF only)
+    const mazayaText = mazaya ? (' • ' + (currentLang === 'ar' ? 'مزايا −10%' : 'Mazaya −10%')) : '';
+
+    const summary = document.getElementById('quoteSummary');
+    summary.textContent = `${tabName} • ${typeText}${finishText}${tintText}${feeText}${mazayaText}${colorText} • ${carModel} • ${(currentLang === 'ar') ? 'السعر بدون VAT' : 'Price before VAT'}`;
+
+    // Inspection disclaimer (PPF services)
     const disclaimer = document.getElementById('inspectionDisclaimer');
-    const needsInspection = (tabKey === 'ppfPackage' || tabKey === 'ppfOnly');
+    const needsInspection = (tabKey === 'ppfPackage' || tabKey === 'ppfOnly' || tabKey === 'frontPPF' || tabKey === 'frontPPFCeramic');
     if (needsInspection) {
         disclaimer.classList.remove('hidden');
         disclaimer.innerHTML = (currentLang === 'ar')
@@ -1000,6 +1239,18 @@ function calculatePackages(isRerender=false) {
     } else {
         disclaimer.classList.add('hidden');
         disclaimer.innerHTML = '';
+    }
+
+    // Ceramic note (range + free PPF + final-after-inspection)
+    const ceramicNote = document.getElementById('ceramicNote');
+    if (isRange) {
+        ceramicNote.classList.remove('hidden');
+        ceramicNote.innerHTML = (currentLang === 'ar')
+            ? `<strong>ملاحظة:</strong> السعر النهائي يُحدد بعد فحص السيارة. يشمل PPF مجاني للأضواء الأمامية وخطوط الأبواب.`
+            : `<strong>Note:</strong> Final price is confirmed after inspecting the vehicle. Includes FREE headlight &amp; door-line PPF.`;
+    } else {
+        ceramicNote.classList.add('hidden');
+        ceramicNote.innerHTML = '';
     }
 
 
@@ -1022,51 +1273,76 @@ function buildWhatsAppMessage() {
     const q = currentSelection.quote;
     if (!q) return '';
 
-    const tabNameEN = (q.tabKey === 'ppfPackage') ? 'PPF Package (PPF + Tint + Ceramic In/Out)'
-                    : (q.tabKey === 'ppfOnly') ? 'PPF Only'
-                    : 'Window Tint Only';
-
-    const tabNameAR = (q.tabKey === 'ppfPackage') ? 'باقة حماية شاملة (PPF + تظليل + سيراميك)'
-                    : (q.tabKey === 'ppfOnly') ? 'PPF فقط'
-                    : 'تظليل فقط';
+    const ppf = (q.tabKey === 'ppfPackage' || q.tabKey === 'ppfOnly');
+    const frontFace = (q.tabKey === 'frontPPF' || q.tabKey === 'frontPPFCeramic');
 
     const typeEN = (q.vehicleType === 'sedan') ? 'Sedan' : 'SUV';
     const typeAR = (q.vehicleType === 'sedan') ? 'سيدان' : 'SUV';
 
-    const finishEN = (q.tabKey === 'tintOnly') ? '' : (q.ppfFinish === 'Matte' ? 'Matte' : 'Gloss/Clear');
-    const finishAR = (q.tabKey === 'tintOnly') ? '' : (q.ppfFinish === 'Matte' ? 'مطفي' : 'لمّاع/شفاف');
+    const finishEN = (q.ppfFinish === 'Matte') ? 'Matte' : 'Gloss/Clear';
+    const finishAR = (q.ppfFinish === 'Matte') ? 'مطفي' : 'لمّاع/شفاف';
 
     const linesEN = [
         '1885 Auto Care Quote (Before VAT)',
-        `Service: ${tabNameEN}`,
+        `Service: ${TAB_NAMES[q.tabKey].en}`,
         `Vehicle: ${q.carModel}`,
         `Type: ${typeEN}`,
     ];
-
     if (q.tabKey === 'ppfPackage' || q.tabKey === 'tintOnly') linesEN.push(`Tint Shade: ${q.tintShade}%`);
-    if (q.tabKey !== 'tintOnly') linesEN.push(`PPF Finish: ${finishEN}`);
-    if (q.tabKey !== 'tintOnly') linesEN.push(`Color: ${q.color}`);
+    if (ppf) linesEN.push(`PPF Finish: ${finishEN}`);
+    if (ppf) linesEN.push(`Color: ${q.color}`);
+    if (frontFace) linesEN.push('Coverage: bumper, hood, side mirrors, headlights');
+    if (q.tabKey === 'fullCeramic') linesEN.push('Includes: FREE headlight & door-line PPF');
 
-    linesEN.push(`Base (Before VAT): ${formatAED(q.basePrice)}`);
-    if (q.removalFee && q.removalFee > 0) linesEN.push(`Removal Fees: ${formatAED(q.removalFee)}`);
-    linesEN.push(`Total (Before VAT): ${formatAED(q.price)}`);
+    if (q.isRange) {
+        linesEN.push(`Estimate (Before VAT): ${formatRange(q.grossMin, q.grossMax)}`);
+        if (q.mazaya) {
+            linesEN.push(`Mazaya Discount (10%): -${formatRange(q.discountMin, q.discountMax)}`);
+            linesEN.push(`Total (Before VAT): ${formatRange(q.netMin, q.netMax)}`);
+        }
+        linesEN.push('Note: Final price confirmed after inspection.');
+    } else {
+        linesEN.push(`Base (Before VAT): ${formatAED(q.basePrice)}`);
+        if (q.removalFee && q.removalFee > 0) linesEN.push(`Removal Fees: ${formatAED(q.removalFee)}`);
+        if (q.mazaya) {
+            linesEN.push(`Subtotal (Before VAT): ${formatAED(q.grossMin)}`);
+            linesEN.push(`Mazaya Discount (10%): -${formatAED(q.discountMin)}`);
+        }
+        linesEN.push(`Total (Before VAT): ${formatAED(q.netMin)}`);
+    }
+    linesEN.push(`Mazaya Cardholder: ${q.mazaya ? 'Yes' : 'No'}`);
     linesEN.push('');
     linesEN.push('Note: Prices shown exclude VAT.');
 
     const linesAR = [
         'عرض سعر 1885 (بدون VAT)',
-        `الخدمة: ${tabNameAR}`,
+        `الخدمة: ${TAB_NAMES[q.tabKey].ar}`,
         `السيارة: ${q.carModel}`,
         `النوع: ${typeAR}`,
     ];
-
     if (q.tabKey === 'ppfPackage' || q.tabKey === 'tintOnly') linesAR.push(`نسبة التظليل: ${q.tintShade}%`);
-    if (q.tabKey !== 'tintOnly') linesAR.push(`نوع الـPPF: ${finishAR}`);
-    if (q.tabKey !== 'tintOnly') linesAR.push(`اللون: ${q.color}`);
+    if (ppf) linesAR.push(`نوع الـPPF: ${finishAR}`);
+    if (ppf) linesAR.push(`اللون: ${q.color}`);
+    if (frontFace) linesAR.push('التغطية: الصدام، الكبوت، المرايا، الأضواء الأمامية');
+    if (q.tabKey === 'fullCeramic') linesAR.push('يشمل: PPF مجاني للأضواء الأمامية وخطوط الأبواب');
 
-    linesAR.push(`الأساس (بدون VAT): ${formatAED(q.basePrice)}`);
-    if (q.removalFee && q.removalFee > 0) linesAR.push(`رسوم الإزالة: ${formatAED(q.removalFee)}`);
-    linesAR.push(`الإجمالي (بدون VAT): ${formatAED(q.price)}`);
+    if (q.isRange) {
+        linesAR.push(`التقدير (بدون VAT): ${formatRange(q.grossMin, q.grossMax)}`);
+        if (q.mazaya) {
+            linesAR.push(`خصم مزايا (10%): -${formatRange(q.discountMin, q.discountMax)}`);
+            linesAR.push(`الإجمالي (بدون VAT): ${formatRange(q.netMin, q.netMax)}`);
+        }
+        linesAR.push('ملاحظة: السعر النهائي يُحدد بعد الفحص.');
+    } else {
+        linesAR.push(`الأساس (بدون VAT): ${formatAED(q.basePrice)}`);
+        if (q.removalFee && q.removalFee > 0) linesAR.push(`رسوم الإزالة: ${formatAED(q.removalFee)}`);
+        if (q.mazaya) {
+            linesAR.push(`المجموع الفرعي (بدون VAT): ${formatAED(q.grossMin)}`);
+            linesAR.push(`خصم مزايا (10%): -${formatAED(q.discountMin)}`);
+        }
+        linesAR.push(`الإجمالي (بدون VAT): ${formatAED(q.netMin)}`);
+    }
+    linesAR.push(`حامل بطاقة مزايا: ${q.mazaya ? 'نعم' : 'لا'}`);
     linesAR.push('');
     linesAR.push('ملاحظة: جميع الأسعار بدون ضريبة القيمة المضافة.');
 
